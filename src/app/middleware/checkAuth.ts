@@ -71,13 +71,6 @@ export const auth = (...requiredRoles: Role[]) => {
 			);
 		}
 
-		if (user.status === "BLOCKED") {
-			throw new AppError(
-				httpStatus.FORBIDDEN,
-				"Your account has been blocked. Please contact support.",
-			);
-		}
-
 		req.user = {
 			email,
 			name,
