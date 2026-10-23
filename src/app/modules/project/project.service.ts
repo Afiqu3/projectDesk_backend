@@ -1,4 +1,5 @@
 import httpStatus from "http-status";
+import { ProjectStatus } from "../../../generated/prisma/enums";
 import type { ProjectWhereInput } from "../../../generated/prisma/models";
 import type { IQuery } from "../../interfaces";
 import { prisma } from "../../lib/prisma";
@@ -7,7 +8,6 @@ import type {
     ICreatedProjectPayload,
     IReviewedProjectPayload,
 } from "./project.interface";
-import { ProjectStatus } from "../../../generated/prisma/enums";
 
 const createProject = async (
     payload: ICreatedProjectPayload,
@@ -23,6 +23,26 @@ const createProject = async (
 
     if (user.isDeleted) {
         throw new AppError(httpStatus.GONE, "Student account has been deleted");
+    }
+
+    const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000);
+    const recentSubmission = await prisma.project.findFirst({
+        where: {
+            userId,
+            createdAt: {
+                gte: tenMinutesAgo,
+            },
+        },
+        orderBy: {
+            createdAt: "desc",
+        },
+    });
+
+    if (recentSubmission) {
+        throw new AppError(
+            httpStatus.BAD_REQUEST,
+            "You can only submit one project every 10 minutes",
+        );
     }
 
     const createdProject = await prisma.project.create({
