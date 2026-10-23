@@ -55,8 +55,23 @@ const getProjects = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+const reviewProject = catchAsync(async (req: Request, res: Response) => {
+    const projectId = req.params.id as string;
+    const payload = req.body;
+
+    const result = await ProjectService.reviewProject(payload, projectId);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Project status updated successfully",
+        data: result,
+    });
+});
+
 export const ProjectController = {
     createProject,
     getMyProjects,
     getProjects,
+    reviewProject,
 };

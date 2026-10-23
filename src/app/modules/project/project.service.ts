@@ -3,7 +3,11 @@ import type { ProjectWhereInput } from "../../../generated/prisma/models";
 import type { IQuery } from "../../interfaces";
 import { prisma } from "../../lib/prisma";
 import { AppError } from "../../utils/AppError";
-import type { ICreatedProjectPayload } from "./project.interface";
+import type {
+    ICreatedProjectPayload,
+    IReviewedProjectPayload,
+} from "./project.interface";
+import { ProjectStatus } from "../../../generated/prisma/enums";
 
 const createProject = async (
     payload: ICreatedProjectPayload,
@@ -143,8 +147,50 @@ const getProjects = async (query: IQuery) => {
     };
 };
 
+const reviewProject = async (
+    payload: IReviewedProjectPayload,
+    projectId: string,
+) => {
+    const project = await prisma.project.findUnique({
+        where: {
+            id: projectId,
+        },
+    });
+
+    if (!project) {
+        throw new AppError(httpStatus.NOT_FOUND, "Project not found");
+    }
+
+    if (project.status !== ProjectStatus.PENDING) {
+        throw new AppError(
+            httpStatus.BAD_REQUEST,
+            "Project has already been reviewed",
+        );
+    }
+
+    if (payload.status === ProjectStatus.REJECTED && !payload.reviewNote) {
+        throw new AppError(
+            httpStatus.BAD_REQUEST,
+            "Review note is required for rejected projects",
+        );
+    }
+
+    const updatedProject = await prisma.project.update({
+        where: {
+            id: projectId,
+        },
+        data: {
+            status: payload.status,
+            reviewNote: payload.reviewNote ?? null,
+        },
+    });
+
+    return updatedProject;
+};
+
 export const ProjectService = {
     createProject,
     getMyProjects,
     getProjects,
+    reviewProject,
 };

@@ -18,4 +18,11 @@ router.get("/", auth(Role.ADMIN, Role.STUDENT), ProjectController.getProjects);
 
 router.get("/my-projects", auth(Role.STUDENT), ProjectController.getMyProjects);
 
+router.patch(
+    "/:id/review",
+    auth(Role.ADMIN),
+    validateRequest(ProjectValidation.reviewProjectSchema),
+    ProjectController.reviewProject,
+);
+
 export const ProjectRoutes = router;
