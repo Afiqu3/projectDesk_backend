@@ -170,6 +170,7 @@ const getProjects = async (query: IQuery) => {
 const reviewProject = async (
     payload: IReviewedProjectPayload,
     projectId: string,
+    userId: string,
 ) => {
     const project = await prisma.project.findUnique({
         where: {
@@ -202,6 +203,8 @@ const reviewProject = async (
         data: {
             status: payload.status,
             reviewNote: payload.reviewNote ?? null,
+            reviewedById: userId,
+            reviewedAt: new Date(),
         },
     });
 

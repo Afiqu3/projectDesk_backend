@@ -59,7 +59,11 @@ const reviewProject = catchAsync(async (req: Request, res: Response) => {
     const projectId = req.params.id as string;
     const payload = req.body;
 
-    const result = await ProjectService.reviewProject(payload, projectId);
+    const result = await ProjectService.reviewProject(
+        payload,
+        projectId,
+        req.user?.userId as string,
+    );
 
     sendResponse(res, {
         statusCode: httpStatus.OK,
