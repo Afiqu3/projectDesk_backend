@@ -40,8 +40,6 @@ export const seedTesterAdmin = async () => {
                 email,
                 password: hashedPassword,
                 role: Role.ADMIN,
-                mustChangePassword: false,
-                emailVerified: true,
             },
         });
 
