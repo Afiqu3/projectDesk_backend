@@ -1,18 +1,17 @@
 model User {
-    id                 String        @id @default(uuid())
-    name               String
-    email              String        @unique
-    password           String?
-    googleId           String?       @unique
-    role               Role          @default(STUDENT)
-    emailVerified      Boolean       @default(false)
-    mustChangePassword Boolean       @default(false)
-    imageUrl           String        @default("")
-    imagePublicId      String        @default("")
-    isDeleted          Boolean       @default(false)
-    deletedAt          DateTime?
-    createdAt          DateTime      @default(now())
-    updatedAt          DateTime      @updatedAt
+    id            String    @id @default(uuid())
+    name          String
+    email         String    @unique
+    password      String
+    role          Role      @default(STUDENT)
+    emailVerified Boolean   @default(false)
+    isDeleted     Boolean   @default(false)
+    deletedAt     DateTime?
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
+
+    projects         Project[] @relation("Submitter")
+    reviewedProjects Project[] @relation("Reviewer")
 
     @@map("users")
 }

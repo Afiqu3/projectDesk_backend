@@ -2,3 +2,9 @@ enum Role {
     ADMIN
     STUDENT
 }
+
+enum ProjectStatus {
+    PENDING
+    APPROVED
+    REJECTED
+}
