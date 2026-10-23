@@ -23,6 +23,40 @@ const createProject = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+const getMyProjects = catchAsync(async (req: Request, res: Response) => {
+    const userId = req.user?.userId;
+
+    if (!userId) {
+        throw new AppError(httpStatus.UNAUTHORIZED, "No User found!");
+    }
+
+    const { data, meta } = await ProjectService.getMyProjects(
+        req.query,
+        userId,
+    );
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Projects Retrieved Successfully",
+        data,
+        meta,
+    });
+});
+
+const getProjects = catchAsync(async (req: Request, res: Response) => {
+    const { data, meta } = await ProjectService.getProjects(req.query);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Parcels Retrieved Successfully",
+        data,
+        meta,
+    });
+});
+
 export const ProjectController = {
     createProject,
+    getMyProjects,
+    getProjects,
 };

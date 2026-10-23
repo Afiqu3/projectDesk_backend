@@ -14,4 +14,8 @@ router.post(
     ProjectController.createProject,
 );
 
+router.get("/", auth(Role.ADMIN, Role.STUDENT), ProjectController.getProjects);
+
+router.get("/my-projects", auth(Role.STUDENT), ProjectController.getMyProjects);
+
 export const ProjectRoutes = router;
