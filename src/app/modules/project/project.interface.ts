@@ -1,7 +1,6 @@
 export type ProjectStatus = "PENDING" | "APPROVED" | "REJECTED";
 
 export interface ICreatedProjectPayload {
-    id: string;
     name: string;
     repoUrl: string;
     liveUrl: string;
